@@ -27,7 +27,13 @@ export class Product extends Model<Product> {
     type: DataType.INTEGER,
     allowNull: true,
   })
-  price: number;
+  amount: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  productCode: string;
 
   // category relationship
   @ForeignKey(() => Category)
