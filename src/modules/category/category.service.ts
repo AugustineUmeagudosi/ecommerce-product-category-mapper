@@ -18,7 +18,10 @@ export class CategoryService {
   findOne(id): Promise<Category> {
     return this.postRepository.findOne({
       where: { id },
-      include: [{ model: User, attributes: { exclude: ['password'] } }],
+      include: [
+        { model: User, as: 'creator', attributes: { exclude: ['password'] } },
+        { model: Category, as: 'categoryParent' },
+      ],
     });
   }
 }

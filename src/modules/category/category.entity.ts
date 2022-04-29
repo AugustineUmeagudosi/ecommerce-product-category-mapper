@@ -30,7 +30,7 @@ export class Category extends Model<Category> {
   })
   parentId: number;
   @BelongsTo(() => Category)
-  category: Category;
+  categoryParent: Category;
 
   // user relationship
   @ForeignKey(() => User)
@@ -40,5 +40,5 @@ export class Category extends Model<Category> {
   })
   createdBy: number;
   @BelongsTo(() => User)
-  user: User;
+  creator: User;
 }
