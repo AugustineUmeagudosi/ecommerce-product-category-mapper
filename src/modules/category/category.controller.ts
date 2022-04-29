@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  HttpCode,
   Param,
   Body,
   NotFoundException,
@@ -18,6 +19,7 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Get(':id')
+  @HttpCode(200)
   async findOne(@Param('id') id: number): Promise<CategoryEntity> {
     // find the category with this id
     const category = await this.categoryService.findOne(id);
@@ -33,6 +35,7 @@ export class CategoryController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
+  @HttpCode(201)
   create(
     @Body() category: CategoryDto,
     @Request() req,

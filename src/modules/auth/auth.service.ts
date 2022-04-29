@@ -28,9 +28,14 @@ export class AuthService {
     return result;
   }
 
-  public async login(user) {
-    const token = await this.generateToken(user);
-    return { user, token };
+  public async login({ id, email, role }) {
+    const userData: any = {};
+    userData.id = id;
+    userData.email = email;
+    userData.role = role;
+
+    const token = await this.generateToken(userData);
+    return { userData, token };
   }
 
   public async create(user) {
@@ -43,11 +48,16 @@ export class AuthService {
     // tslint:disable-next-line: no-string-literal
     const { ...result } = newUser['dataValues'];
 
+    const userData: any = {};
+    userData.id = result.id;
+    userData.email = result.email;
+    userData.role = result.role;
+
     // generate token
-    const token = await this.generateToken(result);
+    const token = await this.generateToken(userData);
 
     // return the user and the token
-    return { user: result, token };
+    return { user: userData, token };
   }
 
   private generateToken(user) {

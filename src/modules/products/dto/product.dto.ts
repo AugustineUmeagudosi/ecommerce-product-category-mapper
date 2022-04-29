@@ -8,8 +8,10 @@ export class ProductDto {
   readonly discount: number;
 
   @IsNotEmpty()
-  readonly price: number;
+  readonly amount: number;
 
   @IsNotEmpty()
   readonly categoryId: number;
+
+  readonly productCode: string;
 }
