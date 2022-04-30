@@ -14,6 +14,7 @@ import { Category as CategoryEntity } from './category.entity';
 import { CategoryDto } from './dto/category.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -26,6 +27,7 @@ import { RolesGuard } from 'src/core/guards/roles.guard';
 import { Role } from '../users/dto/user.dto';
 
 @ApiTags('Product category')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('category')
 export class CategoryController {

@@ -7,6 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Ecommerce API')
     .setDescription('Ecommerce API Documentation')
     .setVersion('1.0')
@@ -15,6 +16,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.useGlobalPipes(new ValidateInputPipe());
-  await app.listen(process.env.PORT);
+  await app.listen(2000);
 }
 bootstrap();

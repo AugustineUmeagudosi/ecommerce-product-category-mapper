@@ -15,7 +15,7 @@ export class CategoryDto {
   @ApiProperty({
     name: 'discount',
     description: 'category discount',
-    type: String,
+    type: Number,
     required: false,
   })
   readonly discount: number;
@@ -23,7 +23,7 @@ export class CategoryDto {
   @ApiProperty({
     name: 'parentId',
     description: 'category parentId',
-    type: String,
+    type: Number,
     required: false,
   })
   readonly parentId: number;

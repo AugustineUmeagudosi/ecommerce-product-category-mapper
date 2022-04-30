@@ -16,6 +16,7 @@ import { Product as ProductEntity } from './product.entity';
 import { ProductDto } from './dto/product.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -30,6 +31,7 @@ import { Roles } from 'src/core/decorators/roles.decorator';
 import { Role } from '../users/dto/user.dto';
 
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 @ApiTags('Products')
 @Controller('products')
 export class ProductsController {
