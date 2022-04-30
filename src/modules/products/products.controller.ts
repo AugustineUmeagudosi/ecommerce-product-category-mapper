@@ -8,16 +8,55 @@ import {
   NotFoundException,
   UseGuards,
   Request,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ProductService } from './products.service';
 import { Product as ProductEntity } from './product.entity';
 import { ProductDto } from './dto/product.dto';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import { ProductDiscountDto } from './dto/discountResponse.dto';
+import { BadRequestDto } from './dto/badRequest.dto';
 
+@ApiTags('Products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productService: ProductService) {}
 
+  @ApiQuery({ name: 'id', type: Number, required: false })
+  @ApiQuery({ name: 'productCode', type: String, required: false })
+  @ApiQuery({ name: 'amount', type: Number, required: true })
+  @ApiOkResponse({ type: ProductDiscountDto, status: 200 })
+  @ApiOkResponse({ type: Number, status: 200 })
+  @ApiBadRequestResponse({ type: BadRequestDto, status: 400 })
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/discount')
+  @HttpCode(200)
+  async getdiscount(
+    @Query('id', ParseIntPipe) id: number,
+    @Query('productCode') productCode: string,
+    @Query('amount', ParseIntPipe) amount: number,
+  ): Promise<any> {
+    // fetch a product's discount
+    const discount = await this.productService.getDiscount({
+      productCode,
+      id,
+      amount,
+    });
+
+    if (!discount) throw new NotFoundException("This product doesn't exist");
+    return discount;
+  }
+
+  @ApiOkResponse({ type: ProductDto, status: 200 })
   @Get(':id')
   @HttpCode(200)
   async findOne(@Param('id') id: number): Promise<ProductEntity> {
@@ -33,26 +72,14 @@ export class ProductsController {
     return product;
   }
 
+  @ApiCreatedResponse({ type: ProductDto, status: 201 })
+  @ApiCreatedResponse()
+  @ApiBody({ type: ProductDto })
   @UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(201)
   create(@Body() product: ProductDto, @Request() req): Promise<ProductEntity> {
     // create a new product and return the newly created product
     return this.productService.create(product, req.user.id);
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Post('/discount')
-  @HttpCode(200)
-  async getdiscount(@Request() req): Promise<any> {
-    // fetch a product's discount
-    const discount = await this.productService.getDiscount({
-      productCode: req.query.productCode,
-      id: req.query.id,
-      amount: req.query.amount,
-    });
-
-    if (!discount) throw new NotFoundException("This product doesn't exist");
-    return discount;
   }
 }

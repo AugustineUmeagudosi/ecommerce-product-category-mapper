@@ -13,11 +13,22 @@ import { AuthGuard } from '@nestjs/passport';
 import { CategoryService } from './category.service';
 import { Category as CategoryEntity } from './category.entity';
 import { CategoryDto } from './dto/category.dto';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { BadRequestDto } from '../products/dto/badRequest.dto';
 
+@ApiTags('Product category')
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  @ApiOkResponse({ type: CategoryDto, status: 200 })
+  @ApiBadRequestResponse({ type: BadRequestDto, status: 400 })
   @Get(':id')
   @HttpCode(200)
   async findOne(@Param('id') id: number): Promise<CategoryEntity> {
@@ -33,6 +44,9 @@ export class CategoryController {
     return category;
   }
 
+  @ApiCreatedResponse({ type: CategoryDto, status: 201 })
+  @ApiBadRequestResponse({ type: BadRequestDto, status: 400 })
+  @ApiBody({ type: CategoryDto })
   @UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(201)

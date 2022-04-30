@@ -1,42 +1,43 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, MinLength } from 'class-validator';
 
-export class ProductDto {
+export class ProductDiscountDto {
   @ApiProperty({
-    name: 'name',
+    name: 'productName',
     description: 'product name',
     type: String,
-    required: true,
   })
   @IsNotEmpty()
   @MinLength(2)
-  readonly name: string;
+  readonly productName: string;
 
   @ApiProperty({
-    name: 'discount',
+    name: 'percentageDiscount',
     description: 'product discount',
     type: Number,
-    required: false,
   })
-  readonly discount: number;
+  readonly percentageDiscount: number;
 
   @ApiProperty({
     name: 'amount',
     description: 'product amount',
     type: Number,
-    required: true,
   })
   @IsNotEmpty()
   readonly amount: number;
 
   @ApiProperty({
-    name: 'categoryId',
-    description: 'product category',
+    name: 'discountedPrice',
+    description: 'discount amount',
     type: Number,
-    required: true,
   })
   @IsNotEmpty()
-  readonly categoryId: number;
+  readonly discountedPrice: number;
 
+  @ApiProperty({
+    name: 'productCode',
+    description: 'product code',
+    type: String,
+  })
   readonly productCode: string;
 }
