@@ -9,7 +9,6 @@ import {
   UseGuards,
   Request,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { CategoryService } from './category.service';
 import { Category as CategoryEntity } from './category.entity';
 import { CategoryDto } from './dto/category.dto';
@@ -21,8 +20,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { BadRequestDto } from '../products/dto/badRequest.dto';
+import { JwtAuthGuard } from 'src/core/guards/jwt-auth.guard';
+import { Roles } from 'src/core/decorators/roles.decorator';
+import { RolesGuard } from 'src/core/guards/roles.guard';
+import { Role } from '../users/dto/user.dto';
 
 @ApiTags('Product category')
+@UseGuards(JwtAuthGuard)
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
@@ -44,10 +48,11 @@ export class CategoryController {
     return category;
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(Role.SUPERADMIN)
   @ApiCreatedResponse({ type: CategoryDto, status: 201 })
   @ApiBadRequestResponse({ type: BadRequestDto, status: 400 })
   @ApiBody({ type: CategoryDto })
-  @UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(201)
   create(
