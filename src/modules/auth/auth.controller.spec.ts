@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Role } from '../users/dto/user.dto';
 import { AuthController } from './auth.controller';
 
 describe('AuthController', () => {
@@ -13,6 +14,19 @@ describe('AuthController', () => {
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(controller.login).toBeDefined();
+    expect(controller.signUp).toBeDefined();
+  });
+
+  describe('signup', () => {
+    it('should register a user', () => {
+      expect(
+        controller.signUp({
+          email: 'test@example.com',
+          password: 'loremIpsum',
+          role: Role.ADMIN,
+        }),
+      ).toBe('worked');
+    });
   });
 });

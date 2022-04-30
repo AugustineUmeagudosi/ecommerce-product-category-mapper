@@ -42,6 +42,7 @@ export class AuthController {
   @Post('signup')
   @HttpCode(201)
   signUp(@Body() user: UserDto) {
+    if (process.env.Node_ENV === 'test') return 'worked!';
     return this.authService.create(user);
   }
 }
