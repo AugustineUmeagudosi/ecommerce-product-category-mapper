@@ -1,4 +1,5 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Role } from './dto/user.dto';
 
 @Table
 export class User extends Model<User> {
@@ -16,9 +17,9 @@ export class User extends Model<User> {
   password: string;
 
   @Column({
-    type: DataType.ENUM,
+    type: 'enum',
     values: ['admin', 'superAdmin'],
     allowNull: false,
   })
-  role: string;
+  role: Role;
 }

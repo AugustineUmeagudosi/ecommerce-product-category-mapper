@@ -11,7 +11,6 @@ import {
   Query,
   ParseIntPipe,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { ProductService } from './products.service';
 import { Product as ProductEntity } from './product.entity';
 import { ProductDto } from './dto/product.dto';
@@ -25,7 +24,12 @@ import {
 } from '@nestjs/swagger';
 import { ProductDiscountDto } from './dto/discountResponse.dto';
 import { BadRequestDto } from './dto/badRequest.dto';
+import { JwtAuthGuard } from 'src/core/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/core/guards/roles.guard';
+import { Roles } from 'src/core/decorators/roles.decorator';
+import { Role } from '../users/dto/user.dto';
 
+@UseGuards(JwtAuthGuard)
 @ApiTags('Products')
 @Controller('products')
 export class ProductsController {
@@ -37,7 +41,6 @@ export class ProductsController {
   @ApiOkResponse({ type: ProductDiscountDto, status: 200 })
   @ApiOkResponse({ type: Number, status: 200 })
   @ApiBadRequestResponse({ type: BadRequestDto, status: 400 })
-  @UseGuards(AuthGuard('jwt'))
   @Get('/discount')
   @HttpCode(200)
   async getdiscount(
@@ -72,10 +75,11 @@ export class ProductsController {
     return product;
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(Role.SUPERADMIN)
   @ApiCreatedResponse({ type: ProductDto, status: 201 })
   @ApiCreatedResponse()
   @ApiBody({ type: ProductDto })
-  @UseGuards(AuthGuard('jwt'))
   @Post()
   @HttpCode(201)
   create(@Body() product: ProductDto, @Request() req): Promise<ProductEntity> {
