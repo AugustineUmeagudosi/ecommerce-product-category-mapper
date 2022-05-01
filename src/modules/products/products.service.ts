@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { Product } from './product.entity';
 import { ProductDto } from './dto/product.dto';
 import { User } from '../users/user.entity';
@@ -6,6 +6,7 @@ import { PRODUCT_REPOSITORY } from '../../core/constants';
 import { Category } from '../category/category.entity';
 import { Chance } from 'chance';
 import { Op } from 'sequelize';
+import { CategoryService } from '../category/category.service';
 
 const chance = new Chance();
 @Injectable()
@@ -13,9 +14,16 @@ export class ProductService {
   constructor(
     @Inject(PRODUCT_REPOSITORY)
     private readonly productRepository: typeof Product,
+    private readonly categoryService: CategoryService,
   ) {}
 
-  create(product: ProductDto, createdBy: number): Promise<Product> {
+  async create(product: ProductDto, createdBy: number): Promise<Product> {
+    const categoryExists = await this.categoryService.findOne(
+      product.categoryId,
+    );
+    if (!categoryExists)
+      throw new NotFoundException("This categoryId doesn't exist");
+
     const productCode = chance.string({
       length: 8,
       alpha: true,
